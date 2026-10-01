@@ -4,95 +4,407 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Moderation · Ummi &amp; Me</title>
+<title>Staff console · Ummi &amp; Me</title>
 <style>
-:root{--bg:#fdf8f6;--card:#fff;--ink:#2b2230;--soft:#5d5263;--accent:#c0567a;--line:#eadfe2;--warn:#b3261e;--ok:#2e7d32}
-@media(prefers-color-scheme:dark){:root{--bg:#1c171e;--card:#262029;--ink:#f4edf0;--soft:#c9bec6;--accent:#e98aac;--line:#3a3040;--warn:#f28b82;--ok:#81c995}}
+:root{--bg:#fdf8f6;--card:#fff;--ink:#2b2230;--soft:#5d5263;--faint:#8a7f8e;--accent:#c0567a;--line:#eadfe2;--warn:#b3261e;--ok:#2e7d32;--chip:#f6eef0}
+@media(prefers-color-scheme:dark){:root{--bg:#1c171e;--card:#262029;--ink:#f4edf0;--soft:#c9bec6;--faint:#9a8f98;--accent:#e98aac;--line:#3a3040;--warn:#f28b82;--ok:#81c995;--chip:#30283a}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Naskh Arabic",sans-serif}
-main{max-width:760px;margin:0 auto;padding:32px 16px 64px}
-h1{font-size:26px;margin:0 0 4px}
-.muted{color:var(--soft);font-size:14px}
-form,.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px}
-label{display:block;font-size:14px;color:var(--soft);margin-top:10px}
-input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
-button{font:inherit;border:0;border-radius:999px;padding:9px 16px;cursor:pointer}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Naskh Arabic",sans-serif}
+main{max-width:860px;margin:0 auto;padding:28px 16px 64px}
+h1{font-size:24px;margin:0}
+h2{font-size:18px;margin:24px 0 4px}
+.muted{color:var(--soft);font-size:13px}
+.faint{color:var(--faint);font-size:12px}
+form.box,.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
+label{display:block;font-size:13px;color:var(--soft);margin-top:10px}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:110px;resize:vertical}
+button{font:inherit;font-size:14px;border:0;border-radius:999px;padding:7px 14px;cursor:pointer;white-space:nowrap}
+button:disabled{opacity:.5;cursor:default}
 .primary{background:var(--accent);color:#fff}
-.remove{background:var(--warn);color:#fff}
-.keep{background:transparent;color:var(--ink);border:1px solid var(--line)}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.tag{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 8px;margin:0 4px 4px 0;color:var(--soft)}
-.tag.harm{border-color:var(--warn);color:var(--warn);font-weight:600}
-.body{white-space:pre-wrap;word-wrap:break-word;margin:10px 0 4px;font-size:17px}
+.danger{background:var(--warn);color:#fff}
+.quiet{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.grow{flex:1;min-width:160px}
+.tag{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin:0 4px 4px 0;color:var(--soft);background:var(--chip)}
+.tag.bad{border-color:var(--warn);color:var(--warn);font-weight:600}
+.tag.good{border-color:var(--ok);color:var(--ok)}
+.body{white-space:pre-wrap;word-wrap:break-word;margin:8px 0 4px;font-size:16px}
+.hiddenbody{opacity:.55}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-#msg{margin-top:12px;font-size:14px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px;border-bottom:1px solid var(--line);padding-bottom:10px}
+nav button{background:transparent;color:var(--soft);border:1px solid transparent}
+nav button.on{background:var(--chip);color:var(--ink);border-color:var(--line);font-weight:600}
+nav .count{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:9px;background:var(--accent);color:#fff;font-size:11px;text-align:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat b{display:block;font-size:26px}
+.replies{margin-top:10px;border-top:1px solid var(--line);padding-top:6px}
+.reply{padding:8px 0;border-bottom:1px dashed var(--line)}
+.reply:last-child{border-bottom:0}
+.answer{background:color-mix(in srgb,var(--ok) 10%,transparent);border-radius:10px;padding:10px;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+#msg{margin-top:12px;font-size:14px;min-height:20px}
+code{font-size:12px}
 </style>
 </head>
 <body>
 <main>
   <div class="top">
-    <div><h1>Moderation</h1><div class="muted">Ummi &amp; Me · reported posts and replies. Review within 24 hours.</div></div>
-    <button id="signout" class="keep" hidden>Sign out</button>
+    <div><h1>Staff console</h1><div class="muted">Ummi &amp; Me · moderation and expert answers</div></div>
+    <div class="row" style="margin:0"><span id="who" class="faint"></span><button id="signout" class="quiet" hidden>Sign out</button></div>
   </div>
 
-  <form id="login" hidden>
+  <form id="login" class="box" hidden>
     <label for="email">Email</label><input id="email" type="email" autocomplete="username" required>
     <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required>
     <div class="row"><button class="primary" type="submit">Sign in</button></div>
+    <p class="faint">Moderators are added by the team. Experts sign up in the Ummi app first, then the team links and verifies the account here.</p>
   </form>
 
+  <nav id="tabs" hidden></nav>
   <div id="msg" class="muted"></div>
-  <div id="queue"></div>
+  <div id="view"></div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const sb = supabase.createClient('https://bqghpbdbmshqtzuoarxs.supabase.co', 'sb_publishable_q1YV3TPtguJAoIx2kJrs9w_xFHehtnG');
-const $ = id => document.getElementById(id);
-const esc = s => (s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const say = (t, bad) => { $('msg').textContent = t; $('msg').style.color = bad ? 'var(--warn)' : ''; };
+const LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
+const sb = LOCAL
+  ? supabase.createClient('http://127.0.0.1:57321', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0')
+  : supabase.createClient('https://bqghpbdbmshqtzuoarxs.supabase.co', 'sb_publishable_q1YV3TPtguJAoIx2kJrs9w_xFHehtnG');
 
-async function load() {
-  const { data: { session } } = await sb.auth.getSession();
-  $('login').hidden = !!session; $('signout').hidden = !session; $('queue').innerHTML = '';
-  if (!session) { say('Sign in with a moderator account.'); return; }
-  const { data: isMod, error: e1 } = await sb.rpc('mod_is_moderator');
-  if (e1 || !isMod) { say('This account is not a moderator. Ask the team to add it.', true); return; }
-  say('Loading…');
-  const { data, error } = await sb.rpc('mod_queue');
-  if (error) { say(error.message, true); return; }
-  say(data.length ? `${data.length} item${data.length > 1 ? 's' : ''} to review. Self-harm reports are first.` : 'Nothing to review. 🎉');
-  $('queue').innerHTML = data.map(r => `
-    <div class="card" data-post="${r.post_id ?? ''}" data-reply="${r.reply_id ?? ''}">
-      <div>${r.reasons.map(x => `<span class="tag ${x === 'self_harm' ? 'harm' : ''}">${esc(x.replace('_', ' '))}</span>`).join('')}
-        <span class="tag">${r.reply_id ? 'reply' : 'post'}</span><span class="tag">circle: ${esc(r.circle_id)}</span>
-        ${r.hidden ? '<span class="tag">auto-hidden</span>' : ''}</div>
-      <div class="body">${esc(r.body) || '<em>(deleted)</em>'}</div>
-      <div class="muted">${r.open_reports} report${r.open_reports > 1 ? 's' : ''} · first ${new Date(r.first_reported).toLocaleString()}
-        ${r.author_posts_removed ? ` · author has ${r.author_posts_removed} removed post(s)` : ''}</div>
-      ${r.notes.length ? `<div class="muted">Notes: ${r.notes.map(esc).join(' · ')}</div>` : ''}
-      ${r.reasons.includes('self_harm') ? '<div class="muted" style="color:var(--warn)">Possible self-harm: follow your safety process before closing.</div>' : ''}
-      <div class="row"><button class="remove" data-act="remove">Remove</button><button class="keep" data-act="dismiss">Keep (no violation)</button></div>
-    </div>`).join('');
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const say = (t, bad) => { $('msg').textContent = t || ''; $('msg').style.color = bad ? 'var(--warn)' : ''; };
+const when = d => d ? new Date(d).toLocaleString(undefined, {dateStyle: 'medium', timeStyle: 'short'}) : '';
+const ago = d => { const m = Math.round((Date.now() - new Date(d)) / 60000);
+  return m < 60 ? `${m}m ago` : m < 1440 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`; };
+const reason = r => ({spam: 'spam / selling', harassment: 'harassment', medical_misinformation: 'harmful medical advice',
+  self_harm: 'possible self-harm', other: 'other'}[r] || r);
+const errText = e => e?.hint ? `${e.message}: ${e.hint}` : (e?.message || 'Something went wrong');
+
+async function rpc(name, args) {
+  const { data, error } = await sb.rpc(name, args);
+  if (error) throw error;
+  return data;
 }
 
-$('queue').addEventListener('click', async e => {
+let role = { mod: false, expert: null };
+let tab = null;
+const TABS = [
+  { id: 'overview',  label: 'Overview',  mod: true },
+  { id: 'reports',   label: 'Reports',   mod: true },
+  { id: 'posts',     label: 'Posts',     mod: true },
+  { id: 'questions', label: 'Questions', expert: true },
+  { id: 'members',   label: 'Suspensions', mod: true },
+  { id: 'experts',   label: 'Experts',   mod: true },
+  { id: 'words',     label: 'Blocked words', mod: true },
+  { id: 'log',       label: 'Log',       mod: true },
+];
+
+async function start() {
+  const { data: { session } } = await sb.auth.getSession();
+  $('login').hidden = !!session; $('signout').hidden = !session; $('tabs').hidden = true; $('view').innerHTML = '';
+  $('who').textContent = session ? session.user.email : '';
+  if (!session) { say('Sign in with a staff account.'); return; }
+  try {
+    const [isMod, me] = await Promise.all([rpc('mod_is_moderator'), rpc('expert_me')]);
+    role = { mod: !!isMod, expert: me?.[0] || null };
+  } catch (e) { say(errText(e), true); return; }
+  if (!role.mod && !role.expert) { say('This account has no staff access. Ask the team to add it as a moderator or verified expert.', true); return; }
+  if (role.expert) $('who').textContent += ` · ${role.expert.name_en}`;
+  const visible = TABS.filter(t => (t.mod && role.mod) || (t.expert && (role.expert || role.mod)));
+  $('tabs').innerHTML = visible.map(t => `<button data-tab="${t.id}">${t.label}<span class="count" data-count="${t.id}" hidden></span></button>`).join('');
+  $('tabs').hidden = false;
+  const wanted = location.hash.slice(1);
+  show(visible.some(t => t.id === wanted) ? wanted : visible[0].id);
+  refreshCounts();
+}
+
+function setCount(id, n) { const el = document.querySelector(`[data-count="${id}"]`); if (el) { el.textContent = n; el.hidden = !n; } }
+async function refreshCounts() {
+  try {
+    if (role.mod) { const s = (await rpc('mod_stats'))[0]; setCount('reports', s.open_reports); setCount('questions', s.open_questions); }
+    else if (role.expert) setCount('questions', (await rpc('expert_questions', { p_answered: false, p_limit: 200 })).length);
+  } catch {}
+}
+
+async function show(id) {
+  tab = id; history.replaceState(null, '', '#' + id);
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === id));
+  $('view').innerHTML = ''; say('Loading…');
+  try { await VIEWS[id](); } catch (e) { say(errText(e), true); }
+}
+$('tabs').addEventListener('click', e => { const b = e.target.closest('button[data-tab]'); if (b) show(b.dataset.tab); });
+
+// ---------------------------------------------------------------------------
+// Shared bits
+// ---------------------------------------------------------------------------
+
+function memberTags(r) {
+  return `<span class="tag" title="Member reference: the same for all of this member's posts and replies.">${esc(r.member_ref)}</span>` +
+    (r.author_name ? `<span class="tag">${esc(r.author_name)}</span>` : '<span class="tag">anonymous</span>') +
+    (r.author_suspended ? '<span class="tag bad">suspended</span>' : '');
+}
+
+function contentActions(kind, id, hidden) {
+  const attr = `data-kind="${kind}" data-id="${id}"`;
+  return `<div class="row">
+    ${hidden ? `<button class="quiet" data-act="restore" ${attr}>Restore</button>`
+             : `<button class="danger" data-act="remove" ${attr}>Remove</button>`}
+    <button class="quiet" data-act="suspend" ${attr}>Suspend author…</button>
+  </div>`;
+}
+
+// Remove / restore / suspend from any card.
+$('view').addEventListener('click', async e => {
   const b = e.target.closest('button[data-act]'); if (!b) return;
-  const card = b.closest('.card');
-  b.disabled = true;
-  const { error } = await sb.rpc('mod_resolve', { p_post: card.dataset.post || null, p_reply: card.dataset.reply || null, p_action: b.dataset.act });
-  if (error) { say(error.message, true); b.disabled = false; return; }
-  card.remove(); say('Done.');
+  const { act, kind, id } = b.dataset;
+  const post = kind === 'post' ? id : null, reply = kind === 'reply' ? id : null;
+  let done = '';
+  try {
+    if (act === 'remove' || act === 'restore') {
+      const note = act === 'remove' ? prompt('Why is it being removed? (kept in the log; optional)') : null;
+      if (act === 'remove' && note === null) return;
+      b.disabled = true;
+      await rpc('mod_set_hidden', { p_post: post, p_reply: reply, p_hidden: act === 'remove', p_note: note });
+      done = act === 'remove' ? 'Removed. The author sees it marked as removed.' : 'Restored.';
+    } else if (act === 'suspend') {
+      const why = prompt('Reason for the suspension (kept in the log):'); if (!why) return;
+      const days = prompt('How many days? 1–365, or leave empty for until lifted.', '7'); if (days === null) return;
+      b.disabled = true;
+      const ref = await rpc('mod_suspend', { p_post: post, p_reply: reply, p_days: days.trim() ? parseInt(days, 10) : null, p_reason: why });
+      done = `${ref} can't post or reply ${days.trim() ? `for ${days} days` : 'until lifted'}. Lift it from Suspensions.`;
+    } else if (act === 'resolve-remove' || act === 'resolve-keep') {
+      b.disabled = true;
+      await rpc('mod_resolve', { p_post: post, p_reply: reply, p_action: act === 'resolve-remove' ? 'remove' : 'dismiss' });
+      b.closest('.card').remove(); say('Done.'); refreshCounts(); return;
+    } else if (act === 'replies') {
+      return toggleReplies(b, id);
+    } else return;
+    await VIEWS[tab]();
+    say(done); refreshCounts();
+  } catch (err) { say(errText(err), true); b.disabled = false; }
 });
+
+async function toggleReplies(b, postId) {
+  const box = b.closest('.card').querySelector('.replies');
+  if (!box.hidden) { box.hidden = true; return; }
+  const rows = await rpc('mod_replies', { p_post: postId });
+  box.innerHTML = rows.length ? rows.map(r => `
+    <div class="reply">
+      <div>${memberTags(r)}${r.hidden ? '<span class="tag bad">removed</span>' : ''}${r.open_reports ? `<span class="tag bad">${r.open_reports} open report(s)</span>` : ''}<span class="faint">${ago(r.created_at)}</span></div>
+      <div class="body ${r.hidden ? 'hiddenbody' : ''}">${esc(r.body)}</div>
+      ${contentActions('reply', r.id, r.hidden)}
+    </div>`).join('') : '<div class="faint">No replies.</div>';
+  box.hidden = false;
+}
+
+// ---------------------------------------------------------------------------
+// Views
+// ---------------------------------------------------------------------------
+
+const VIEWS = {
+  async overview() {
+    const s = (await rpc('mod_stats'))[0];
+    const stat = (n, label, go) => `<div class="stat" ${go ? `data-go="${go}" style="cursor:pointer"` : ''}><b>${n}</b><span class="muted">${label}</span></div>`;
+    $('view').innerHTML = `<div class="stats">
+      ${stat(s.open_reports, 'open reports', 'reports')}
+      ${stat(s.awaiting_review, 'auto-hidden, awaiting review', 'reports')}
+      ${stat(s.open_questions, 'unanswered questions', 'questions')}
+      ${stat(s.posts_24h, 'posts in 24h', 'posts')}
+      ${stat(s.replies_24h, 'replies in 24h', 'posts')}
+      ${stat(s.active_suspensions, 'members suspended', 'members')}
+      ${stat(s.verified_experts, 'verified experts with an account', 'experts')}
+    </div>
+    <div class="card muted">
+      <b>How it works</b><br>
+      Members report posts and replies from the app; three reports hide one automatically until you review it. Review reports within 24 hours, possible self-harm first.
+      You can also remove anything from <b>Posts</b>, and suspend a member from posting. Members are shown by a reference like <code>M-1A2B3C4D</code>:
+      anonymous posts never show a name here. The reference is the same for all of one member's posts, so you can see patterns; keep what you see confidential. A removed post stays visible to its author, marked as removed.
+    </div>`;
+    $('view').querySelectorAll('[data-go]').forEach(el => el.onclick = () => show(el.dataset.go));
+    say(s.open_reports ? '' : 'Nothing waiting. 🎉');
+  },
+
+  async reports() {
+    const rows = await rpc('mod_queue');
+    say(rows.length ? `${rows.length} item${rows.length > 1 ? 's' : ''} to review. Possible self-harm first.` : 'Nothing to review. 🎉');
+    $('view').innerHTML = rows.map(r => {
+      const kind = r.reply_id ? 'reply' : 'post', id = r.reply_id || r.post_id;
+      return `<div class="card">
+        <div>${r.reasons.map(x => `<span class="tag ${x === 'self_harm' ? 'bad' : ''}">${esc(reason(x))}</span>`).join('')}
+          <span class="tag">${kind}</span><span class="tag">${esc(r.circle_id)}</span>${r.hidden ? '<span class="tag bad">auto-hidden</span>' : ''}</div>
+        <div class="body">${esc(r.body) || '<em>(deleted by its author)</em>'}</div>
+        <div class="row" style="margin-top:2px">${memberTags(r)}</div>
+        <div class="faint">${r.open_reports} report${r.open_reports > 1 ? 's' : ''} · first ${when(r.first_reported)}
+          ${r.author_posts_removed ? ` · this member has ${r.author_posts_removed} removed post(s)/repl(ies)` : ''}</div>
+        ${r.notes.length ? `<div class="muted">Notes: ${r.notes.map(esc).join(' · ')}</div>` : ''}
+        ${r.reasons.includes('self_harm') ? '<div class="muted" style="color:var(--warn)">Possible self-harm: follow the safety process before closing (Kuwait emergency 112).</div>' : ''}
+        <div class="row">
+          <button class="danger" data-act="resolve-remove" data-kind="${kind}" data-id="${id}">Remove</button>
+          <button class="quiet" data-act="resolve-keep" data-kind="${kind}" data-id="${id}">Keep (no violation)</button>
+          <button class="quiet" data-act="suspend" data-kind="${kind}" data-id="${id}">Suspend author…</button>
+        </div>
+      </div>`;
+    }).join('');
+  },
+
+  async posts(filters) {
+    const f = filters || postFilters;
+    $('view').innerHTML = `<form class="box" id="pf"><div class="row" style="margin:0">
+        <input class="grow" id="pq" placeholder="Search text, or a member reference like M-1A2B3C4D" value="${esc(f.search)}">
+        <select id="pfilter" style="width:auto">
+          <option value="all">Everything</option><option value="hidden">Removed / hidden</option><option value="questions">Unanswered questions</option>
+        </select>
+        <button class="primary">Search</button></div></form><div id="plist"></div>`;
+    $('pfilter').value = f.filter;
+    $('pf').onsubmit = ev => { ev.preventDefault(); postFilters = { search: $('pq').value, filter: $('pfilter').value }; VIEWS.posts(postFilters); };
+    const rows = await rpc('mod_posts', { p_search: f.search || null, p_filter: f.filter, p_limit: 100 });
+    say(rows.length ? `${rows.length} post${rows.length > 1 ? 's' : ''}, newest first.` : 'No posts match.');
+    $('plist').innerHTML = rows.map(p => `<div class="card">
+      <div><span class="tag">${esc(p.circle_name)}</span>${p.is_question ? `<span class="tag ${p.answered ? 'good' : ''}">${p.answered ? 'answered question' : 'question'}</span>` : ''}
+        ${p.hidden ? '<span class="tag bad">removed</span>' : ''}${p.open_reports ? `<span class="tag bad">${p.open_reports} open report(s)</span>` : ''}
+        <span class="faint">${ago(p.created_at)}</span></div>
+      <div class="body ${p.hidden ? 'hiddenbody' : ''}">${esc(p.body)}</div>
+      <div class="row" style="margin-top:2px">${memberTags(p)}<span class="faint">♡ ${p.heart_count}</span></div>
+      <div class="row">${p.reply_count ? `<button class="quiet" data-act="replies" data-id="${p.id}">${p.reply_count} repl${p.reply_count > 1 ? 'ies' : 'y'}</button>` : ''}</div>
+      ${contentActions('post', p.id, p.hidden)}
+      <div class="replies" hidden></div>
+    </div>`).join('');
+  },
+
+  async questions() {
+    if (!role.expert) {
+      // Moderators without an expert profile see what's waiting, read-only.
+      const rows = await rpc('mod_posts', { p_filter: 'questions', p_limit: 200 });
+      say(`${rows.length} question${rows.length === 1 ? '' : 's'} waiting for an expert. Only verified experts can answer.`);
+      $('view').innerHTML = rows.map(p => `<div class="card"><div><span class="tag">${esc(p.circle_name)}</span><span class="faint">${ago(p.created_at)}</span></div>
+        <div class="body">${esc(p.body)}</div></div>`).join('');
+      return;
+    }
+    $('view').innerHTML = `<div class="row"><button class="quiet" id="qopen">Waiting</button><button class="quiet" id="qdone">Answered</button></div><div id="qlist"></div>`;
+    $('qopen').onclick = () => loadQuestions(false); $('qdone').onclick = () => loadQuestions(true);
+    await loadQuestions(questionsAnswered);
+  },
+
+  async members() {
+    const rows = await rpc('mod_suspensions');
+    say(rows.length ? `${rows.length} member${rows.length > 1 ? 's' : ''} can't post or reply. They can still read and send hugs.` : 'No one is suspended.');
+    $('view').innerHTML = `<div class="card muted">Suspend a member from a post or reply (Reports or Posts tab). The app tells her she's paused and until when.</div>` +
+      (rows.length ? `<div class="card"><table><tr><th>Member</th><th>Reason</th><th>Until</th><th>Removed items</th><th></th></tr>
+      ${rows.map(r => `<tr><td><code>${esc(r.member_ref)}</code></td><td>${esc(r.reason)}</td><td>${r.until ? when(r.until) : 'until lifted'}</td>
+        <td>${r.removed_items}</td><td><button class="quiet" data-lift="${esc(r.member_ref)}">Lift</button></td></tr>`).join('')}</table></div>` : '');
+    $('view').querySelectorAll('[data-lift]').forEach(b => b.onclick = async () => {
+      if (!confirm(`Let ${b.dataset.lift} post again?`)) return;
+      try { await rpc('mod_unsuspend', { p_ref: b.dataset.lift }); VIEWS.members(); } catch (e) { say(errText(e), true); }
+    });
+  },
+
+  async experts() {
+    const rows = await rpc('mod_experts');
+    say('');
+    $('view').innerHTML = `<div class="card"><table><tr><th>Expert</th><th>Account</th><th>Answers</th><th>Status</th><th></th></tr>
+      ${rows.map((x, i) => `<tr><td><b>${esc(x.name_en)}</b><br><span class="faint">${esc(x.role_en)} · ${esc(x.name_ar)}</span></td>
+        <td>${x.email ? esc(x.email) : '<span class="faint">not linked</span>'}</td><td>${x.answers}</td>
+        <td>${x.verified && x.email ? '<span class="tag good">answering</span>' : x.verified ? '<span class="tag">verified, no account</span>' : '<span class="tag">not verified</span>'}</td>
+        <td><button class="quiet" data-edit="${i}">Edit</button></td></tr>`).join('')}</table></div>
+      <form class="box" id="xf">
+        <b id="xtitle">Add an expert</b>
+        <div class="faint">She signs up in the Ummi app with this email first. Check her licence before verifying: verified experts' answers show a green badge to every member.</div>
+        <label>Id (lower case, e.g. <code>dr-noor</code>)</label><input id="xid" required pattern="[a-z0-9-]{2,32}">
+        <label>Account email</label><input id="xemail" type="email">
+        <div class="row"><div class="grow"><label>Name (English)</label><input id="xne" required></div><div class="grow"><label>Name (Arabic)</label><input id="xna" dir="rtl" required></div></div>
+        <div class="row"><div class="grow"><label>Role (English), e.g. OB/GYN · Verified</label><input id="xre" required></div><div class="grow"><label>Role (Arabic)</label><input id="xra" dir="rtl" required></div></div>
+        <label style="display:flex;gap:8px;align-items:center"><input id="xv" type="checkbox" style="width:auto"> Verified (licence checked)</label>
+        <div class="row"><button class="primary">Save</button><button class="quiet" type="reset" id="xreset">Clear</button></div>
+      </form>`;
+    $('view').querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+      const x = rows[+b.dataset.edit];
+      $('xtitle').textContent = `Edit ${x.name_en}`;
+      $('xid').value = x.id; $('xemail').value = x.email || ''; $('xne').value = x.name_en; $('xna').value = x.name_ar;
+      $('xre').value = x.role_en; $('xra').value = x.role_ar; $('xv').checked = x.verified;
+      $('xf').scrollIntoView({ behavior: 'smooth' });
+    });
+    $('xreset').onclick = () => { $('xtitle').textContent = 'Add an expert'; };
+    $('xf').onsubmit = async ev => {
+      ev.preventDefault();
+      try {
+        await rpc('mod_save_expert', { p_id: $('xid').value, p_email: $('xemail').value || null, p_name_en: $('xne').value, p_name_ar: $('xna').value,
+          p_role_en: $('xre').value, p_role_ar: $('xra').value, p_verified: $('xv').checked });
+        await VIEWS.experts(); say('Saved.');
+      } catch (e) { say(errText(e), true); }
+    };
+  },
+
+  async words() {
+    const rows = await rpc('mod_terms');
+    say(`${rows.length} blocked word${rows.length === 1 ? '' : 's'}. Posts and replies containing one are refused before they're published.`);
+    $('view').innerHTML = `<form class="box" id="wf"><div class="row" style="margin:0">
+        <input class="grow" id="wterm" placeholder="Word or phrase, any language (whole-word match)" required>
+        <button class="primary">Block</button></div>
+        <div class="faint">Links and phone numbers are always refused. Add Arabic terms too: the starter list is English only.</div></form>
+      <div class="card">${rows.map(r => `<span class="tag">${esc(r.term)} <a href="#" data-term="${esc(r.term)}" title="Unblock" style="color:inherit;text-decoration:none">×</a></span>`).join('') || '<span class="faint">None.</span>'}</div>`;
+    $('wf').onsubmit = async ev => { ev.preventDefault(); try { await rpc('mod_add_term', { p_term: $('wterm').value }); VIEWS.words(); } catch (e) { say(errText(e), true); } };
+    $('view').querySelectorAll('[data-term]').forEach(a => a.onclick = async ev => {
+      ev.preventDefault(); if (!confirm(`Allow “${a.dataset.term}” again?`)) return;
+      try { await rpc('mod_remove_term', { p_term: a.dataset.term }); VIEWS.words(); } catch (e) { say(errText(e), true); }
+    });
+  },
+
+  async log() {
+    const rows = await rpc('mod_log', { p_limit: 200 });
+    say(rows.length ? 'Every moderator action, newest first.' : 'No actions yet.');
+    $('view').innerHTML = rows.length ? `<div class="card"><table><tr><th>When</th><th>Who</th><th>Action</th><th>Member</th><th>Detail</th></tr>
+      ${rows.map(r => `<tr><td>${when(r.created_at)}</td><td>${esc(r.moderator || '—')}</td><td>${esc(r.action.replace('_', ' '))}</td>
+        <td>${r.member_ref ? `<code>${esc(r.member_ref)}</code>` : ''}</td><td>${esc(r.detail)}</td></tr>`).join('')}</table></div>` : '';
+  },
+};
+
+let postFilters = { search: '', filter: 'all' };
+let questionsAnswered = false;
+
+async function loadQuestions(answered) {
+  questionsAnswered = answered;
+  $('qopen').className = answered ? 'quiet' : 'primary'; $('qdone').className = answered ? 'primary' : 'quiet';
+  const rows = await rpc('expert_questions', { p_answered: answered, p_limit: 100 });
+  say(answered ? `${rows.length} answered.` : rows.length ? `${rows.length} waiting, oldest first.` : 'No questions waiting. 🎉');
+  $('qlist').innerHTML = rows.map(q => `<div class="card" data-q="${q.id}">
+    <div><span class="tag">${esc(q.circle_name)}</span><span class="faint">asked ${ago(q.created_at)}</span>
+      ${q.reply_count ? `<span class="faint"> · ${q.reply_count} member repl${q.reply_count > 1 ? 'ies' : 'y'}</span>` : ''}</div>
+    <div class="body">${esc(q.body)}</div>
+    ${q.answer_body ? `<div class="answer"><div class="faint">${q.mine ? 'Your answer' : `Answered by ${esc(q.answered_by)}`}</div><div class="body">${esc(q.answer_body)}</div></div>` : ''}
+    ${!q.answer_body || q.mine ? `
+      <textarea placeholder="Write your answer in English or Arabic. General guidance only: no diagnoses, prescriptions or contact details." maxlength="4000">${esc(q.mine ? q.answer_body : '')}</textarea>
+      <div class="row"><button class="primary" data-answer>${q.mine ? 'Update answer' : 'Publish answer'}</button>
+        ${q.mine ? '<button class="quiet" data-retract>Take back</button>' : ''}
+        <span class="faint">Members see it under the question with your name and a verified badge.</span></div>` : ''}
+  </div>`).join('');
+  $('qlist').querySelectorAll('[data-answer]').forEach(b => b.onclick = async () => {
+    const card = b.closest('.card'), body = card.querySelector('textarea').value.trim();
+    if (!body) return;
+    b.disabled = true;
+    try { await rpc('expert_answer', { p_post: card.dataset.q, p_body: body }); say('Published.'); refreshCounts(); loadQuestions(questionsAnswered); }
+    catch (e) { say(errText(e), true); b.disabled = false; }
+  });
+  $('qlist').querySelectorAll('[data-retract]').forEach(b => b.onclick = async () => {
+    if (!confirm('Take your answer back? The question goes back to the waiting list.')) return;
+    try { await rpc('expert_retract', { p_post: b.closest('.card').dataset.q }); refreshCounts(); loadQuestions(questionsAnswered); }
+    catch (e) { say(errText(e), true); }
+  });
+}
 
 $('login').addEventListener('submit', async e => {
   e.preventDefault(); say('Signing in…');
   const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
   if (error) { say(error.message, true); return; }
-  $('password').value = ''; load();
+  $('password').value = ''; start();
 });
-$('signout').addEventListener('click', async () => { await sb.auth.signOut(); load(); });
-load();
+$('signout').addEventListener('click', async () => { await sb.auth.signOut(); start(); });
+start();
 </script>
 </body>
 </html>
